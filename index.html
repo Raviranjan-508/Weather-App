@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <style>
+        #mapData{
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            border: 2px solid black;
+            grid-template-rows: auto;
+        }
+        #mapData>div{
+            border: 2px solid black;
+            text-align: center;
+            background-color: #3c527b;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="search" placeholder="Enter-City" id="city">
+    <button type="submit" onclick="checkWeather()">submit</button>
+    <div id="mapData">
+        <div id="container">
+    
+        </div>
+        <div id="map">
+        
+        </div>
+       
+    </div>
+</body>
+
+</html>
+
+<script>
+    async function checkWeather() {
+        try {
+            container.innerText = null;
+            let city = document.querySelector("#city").value;
+
+            let res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=e4c70ce6a6821649a416cb9521d5f4f8&units=metric`);
+            let data = await res.json();
+            console.log("data: ", data);
+            appendData(data);
+        }
+        catch (err) {
+            console.log("error");
+        }
+    }
+    function appendData(data)
+    {
+        document.querySelector("#container").innerHTML = "";
+        document.querySelector("#map").innerHTML = "";
+
+        // Show min temp, max temp, wind, clounds, sunrise, sunset etc.
+        var div1 = document.createElement("div");
+
+        // var cityTemp = document.createElement("h3");
+        // cityTemp.innerText = data.main.temp;
+
+        var cityName = document.createElement("h3");
+        cityName.innerText = `City-Name: ${data.name}`
+
+        var cityMinTemp = document.createElement("h3");
+        cityMinTemp.innerText = `City-Min-Temp: ${data.main.temp_max}`
+
+        var cityMaxTemp = document.createElement("h3");
+        cityMaxTemp.innerText = `City-Max-Temp: ${data.main.temp_min}`
+
+        var cityWeather = document.createElement("h3");
+        cityWeather.innerText = `City-Weather: ${data.weather[0].main}`
+
+        var cityWind = document.createElement("h3");
+        cityWind.innerText = `City-Wind: ${data.wind.speed}`
+
+        var cityWindImage = document.createElement("img");
+        // cityWindImage.src = `${data.weather[0].icon}`;
+
+        // `Actors : ${obj.Actors}`;
+
+        var mapIframe = document.createElement("iframe");
+        mapIframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+        mapIframe.height = "300px";
+        mapIframe.width = "680px";
+
+        if(cityWeather == "clean")
+        {
+            cityWindImage.src = ""
+        }
+  
+        map.append(mapIframe);
+        container.append(cityName,cityMinTemp,cityMaxTemp,cityWeather,cityWind,cityWindImage);
+    }
+
+
+
+</script>
